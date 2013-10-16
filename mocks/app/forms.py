@@ -129,3 +129,10 @@ class CreateSlotForm(forms.Form):
                 """)
         self.cleaned_data['datetime'] = dt
         return self.cleaned_data
+
+class DeleteInterviewForm(forms.Form):
+    description = forms.CharField(
+        required=True,
+        label="Why do you want to delete this mock interview?",
+        max_length=400,
+        widget=forms.Textarea(attrs={'class':'form-control'}))

@@ -1,0 +1,13 @@
+{% extends "types/mockitem.html" %}
+
+{% block mockerdetails %}
+{% endblock %}
+
+{% block mockeeinfo %}
+{% endblock mockeeinfo %}
+
+{% block endbutton %}
+    <button class="btn btn-info moreinfo-btn" type="button" value="/info/{{ item.id }}"> 
+        More info
+    </button>
+{% endblock %}

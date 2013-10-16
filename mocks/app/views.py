@@ -38,9 +38,11 @@ def getAvailableMockInterviews():
             date = item.start
             items.append( { 
                 'mocker': mocker,
-                'date': date 
+                'starttime': date,
+                'endtime': date + datetime.timedelta(hours=1),
+                'id': item.id
             })
-    return sorted( items, key=lambda it:it['date'], reverse=True)
+    return sorted( items, key=lambda it:it['starttime'])
 
 def getScheduledMockInterviews(user):
     items = []
@@ -48,14 +50,17 @@ def getScheduledMockInterviews(user):
     for item in allitems:
         if item.mockee == user or item.mocker == user:
             mocker = MUser.objects.filter(id = item.mocker.id)[0]
-            if item.mockee:
-                mockee = MUser.objects.filter(id = item.mockee.id)[0]
             date = item.start
             items.append( { 
                 'mocker': mocker,
-                'date': date 
+                'starttime': date,
+                'endtime': date + datetime.timedelta(hours=1),
+                'id': item.id
             })
-    return sorted( items, key=lambda it:it['date'], reverse=True)
+            if item.mockee:
+                mockee = MUser.objects.filter(id = item.mockee.id)[0]
+                items[-1]['mockee'] = mockee
+    return sorted( items, key=lambda it:it['starttime'])
 
 @login_required
 def home(request):
@@ -71,7 +76,7 @@ def schedule(request):
     user = get_object_or_404(MUser, username=request.user.username)
 
     context['items'] = getScheduledMockInterviews(user)
-    return render(request, 'pages/home.html', context)
+    return render(request, 'pages/schedule.html', context)
 
 @login_required
 def createslot(request):
@@ -92,13 +97,97 @@ def createslot(request):
         errors = form.non_field_errors;
         return render(request, 'pages/createslot.html', context)
 
-    # date = context['date']
-    # time = context['time']
-    # dt = datetime.datetime.combine(date, time)
     mockInterview = Interview(mocker=user, start=form.cleaned_data['datetime'])
     mockInterview.save()
 
     return redirect('/schedule')
+
+@login_required
+def scheduleInterview(request, interviewId):
+    context = { 'page': 'home', }
+    errors = []
+
+    item = get_object_or_404(Interview, id=interviewId)
+    mocker = get_object_or_404(MUser, id=item.mocker.id)
+    mockee = get_object_or_404(MUser, id=request.user.id)
+    date = item.start
+
+    mockitem = {
+        'mocker': mocker,
+        'starttime': date,
+        'endtime': date + datetime.timedelta(hours=1),
+        'id': item.id
+    }
+    context['item'] = mockitem
+    if mocker.id == mockee.id:
+        errors.append("You cannot schedule an interview with yourself")
+    if item.mockee:
+        errors.append("Someone else just scheduled this interview")
+    if errors:
+        context['errors'] = errors
+        return render(request, 'pages/scheduleInterview.html', context)
+
+    if not request.method == "POST":
+        return render(request, 'pages/scheduleInterview.html', context)
+
+    item.mockee = mockee
+    item.save()
+
+    context['success'] = "The interview is scheduled! Please talk to your interviewer before the interview time about details on how to talk and what to prepare."
+    return render(request, 'pages/scheduleInterview.html', context)
+
+@login_required
+def deleteInterview(request, interviewId):
+    context = { 'page': 'schedule', }
+    errors = []
+
+    item = get_object_or_404(Interview, id=interviewId)
+    mocker = get_object_or_404(MUser, id=item.mocker.id)
+    if not item.mockee and mocker.id == request.user.id:
+        item.delete()
+        context['success'] = "Item was deleted. Next time please plan to stick to your schedule better."
+        return render(request, 'pages/deleteInterview.html', context) 
+    mockee = get_object_or_404(MUser, id=item.mockee.id)
+    if (mocker.id == request.user.id) == (mockee.id == request.user.id):
+        print mocker.id == request.user.id, mockee.id == request.user.id
+        context['errors'] = ["You cannot interfere with this item."]
+        return render(request, 'pages/deleteInterview.html', context) 
+    date = item.start
+
+    mockitem = {
+        'mocker': mocker,
+        'mockee': mockee,
+        'starttime': date,
+        'endtime': date + datetime.timedelta(hours=1),
+        'id': item.id
+    }
+    context['item'] = mockitem
+    context['form_submit'] = '/delete/' + interviewId
+    context['form_button'] = 'Delete interview'
+    context['no_button'] = True
+
+    if request.method == 'GET':
+        form = DeleteInterviewForm()
+        context['form'] = form
+        return render(request, 'pages/deleteInterview.html', context)
+
+    form = DeleteInterviewForm(request.POST)
+
+    if not form.is_valid():
+        context['form'] = form
+        errors = form.non_field_errors;
+        return render(request, 'pages/deleteInterview.html', context)
+
+    if mocker.id == request.user.id:
+        item.delete()
+        context['success'] = """Item was deleted from your schedule and your interviewees schedule.
+            Let your interviewee know that you don't have the time to attend the mock interview by emailing him at: """ + mockee.email + SCHOOL_ADDRESS
+    elif mockee.id == request.user.id:
+        item.mockee = None
+        item.save()
+        context['success'] = """Item was deleted from your schedule. Next time please plan to stick to your schedule better. 
+            Let your interviewer know that you don't have the time to attend the mock interview by emailing him at: """ + mocker.email + SCHOOL_ADDRESS
+    return render(request, 'pages/deleteInterview.html', context)
 
 # @login_required
 # def profile(request, username):
@@ -240,86 +329,3 @@ Please click the link below to verify your email address and complete the regist
 
     context['email'] = new_user.email + SCHOOL_ADDRESS
     return render(request, 'pages/emailconfirm.html', context)
-
-
-# def gr_login(request):
-#     if request.user:
-#         user = request.user
-#         if user.is_authenticated():
-#             return redirect('/')
-#     context = { 'page': 'login' }
-
-#     if (request.method == 'GET'):
-#         return render(request, 'pages/login.html', context)
-
-#     users = GrumblrUser.objects.filter(username= request.POST['username'])
-#     if len(users) != 1:
-#         context['errors']= ["Invalid username and/or password!"]
-#         return render(request, 'pages/login.html', context)
-#     user = users[0]
-
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     user = authenticate(username=username, password=password)
-#     if user is not None:
-#         if user.is_active:
-#             login(request, user)
-#             return redirect('/')
-#         else:
-#             context['errors']= ["Your account may not be activated! Try checking your email!"]
-#             return render(request, 'pages/login.html', context)
-#     else:
-#         context['errors']= ["Invalid username and/or password!"]
-#         return render(request, 'pages/login.html', context)
-
-# def gr_signup(request):
-
-#     if request.user:
-#         user = request.user
-#         if user.is_authenticated():
-#             return redirect('/')
-
-#     context = { 'page': 'signup' }
-
-#     if request.method == 'GET':
-#         form = SignupForm()
-#         context['form'] = form
-#         return render(request, 'pages/signup.html', context)
-
-#     form = SignupForm(request.POST, request.FILES)
-#     context['form'] = form
-
-#     if not form.is_valid():
-#         errors = form.non_field_errors;
-#         return render(request, 'pages/signup.html', context)
-
-#     new_user = GrumblrUser.objects.create_user(
-#                         username=form.cleaned_data['username'],
-#                         password=form.cleaned_data['password'],
-#                         email=form.cleaned_data['email'],
-#                         city=form.cleaned_data['city'],
-#                         twitter=form.cleaned_data['twitter'],
-#                         facebook=form.cleaned_data['facebook'],
-#                         realname=form.cleaned_data['realname'],
-#                         picture=form.cleaned_data['picture'])
-#     new_user.is_active = False
-#     new_user.save()
-
-#     token = default_token_generator.make_token(new_user)
-
-#     email_body = """
-# Welcome to the Grumblr!  Please click the link below to
-# verify your email address and complete the registration of your account:
-
-#   http://%s%s
-# """ % (request.get_host(),
-#        reverse('confirm', args=(new_user.username, token)))
-
-#     send_mail(subject="Verify your email address",
-#               message= email_body,
-#               from_email="dhasegan@cs.cmu.edu",
-#               recipient_list=[new_user.email])
-
-#     context['email'] = form.cleaned_data['email']
-#     return render(request, 'pages/needs-confirmation.html', context)
-

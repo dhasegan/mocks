@@ -38,3 +38,10 @@ $('.profile-link').click(
     window.location.href = "/profile";
   }.bind(this)
 );
+
+/*
+  Mockitem button
+ */
+$('.moreinfo-btn').click( function() {
+  window.location.href = this.value;
+});

@@ -1,2 +1,63 @@
-Interviewer: {{ item.mocker.username }} <br>
-Time: {{ item.date }}
+{% block mockerinfo %}
+    <div class="mocker"> 
+        <div class="nameattr">
+            <span class="attr"> Interviewer: </span>
+            <span class="val"> {{ item.mocker.username }} ({{ item.mocker.email }}) </span>
+        </div>
+        {% block mockerdetails %}
+            {% if item.mocker.skypeId %}
+                <div class="skypeidattr">
+                    <span class="attr"> Skype Id: </span>
+                    <span class="val"> {{ item.mocker.skypeId }} </span>
+                </div>
+            {% endif %}
+            <div class="detailsattr">
+                <div class="attr"> Description: </div>
+                <div class="val"> {{ item.mocker.description }} </div>
+            </div>
+        {% endblock mockerdetails %}
+    </div>
+{% endblock mockerinfo %}
+
+{% block mockeeinfo %}
+    {% if item.mockee %}
+        <div class="mockee">
+                <div class="nameattr">
+                    <span class="attr"> Interviewee: </span>
+                    <span class="val"> {{ item.mockee.username }} ({{ item.mockee.email }}) </span>
+                </div>
+                {% block mockeedetails %}
+                    {% if item.mockee.skypeId %}
+                        <div class="skypeidattr">
+                            <span class="attr"> Skype Id: </span>
+                            <span class="val"> {{ item.mockee.skypeId }} </span>
+                        </div>
+                    {% endif %}
+                    {% if item.mockee.description %}
+                        <div class="detailsattr">
+                            <div class="attr"> Description: </div>
+                            <div class="val"> {{ item.mockee.description }} </div>
+                        </div>
+                    {% endif %}
+                {% endblock mockeedetails %}
+        </div>
+    {% endif %}
+{% endblock mockeeinfo %}
+
+{% block starttime %}
+    <div class="starttime"> Time Start: {{ item.starttime }} </div>
+{% endblock starttime %}
+
+{% block endtime %}
+    <div class="endtime"> Time End: {{ item.endtime }} </div>
+{% endblock endtime %}
+
+{% block endbutton %}
+    {% if not no_button %}
+        <form  method="get" action="/delete/{{ item.id }}">
+            <button class="btn btn-danger deleteitem-btn" type="submit" value="delete"> 
+                Delete interview
+            </button>
+        </form>
+    {% endif %}
+{% endblock %}

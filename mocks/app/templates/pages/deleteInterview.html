@@ -1,0 +1,20 @@
+{% extends "pages/loggedin.html" %}
+
+{% block content %}
+    {% for error in errors %}
+        <div class="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+    {% if success %}
+        <div class="alert alert-success">
+            {{ success }}
+        </div>
+    {% endif %}
+
+    {% include "types/mockitem.html" %}
+
+    {% if form %}
+        {% include "types/form.html" %}
+    {% endif %}
+{% endblock content %}

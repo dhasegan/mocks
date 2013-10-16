@@ -1,0 +1,15 @@
+{% extends "types/mockitem.html" %}
+
+{% block mockeeinfo %}
+{% endblock %}
+
+{% block endbutton %}
+    {% if not item.mockee %}
+        <form  method="post" action="/info/{{ item.id }}">
+            {% csrf_token %}
+            <button class="btn btn-primary scheduleitem-btn" type="submit" value="schedule"> 
+                Schedule interview
+            </button>
+        </form>
+    {% endif %}
+{% endblock %}
