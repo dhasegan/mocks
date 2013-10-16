@@ -1,8 +1,14 @@
 from django import forms
 
+# User manangement
 from django.contrib.auth.models import User
-from models import *
 from django.contrib.auth import authenticate
+
+# Password management
+from django.contrib.auth.hashers import check_password
+
+# App Models 
+from models import *
 
 # Datetime handler
 import datetime
@@ -198,3 +204,25 @@ class ProfileChangePasswordForm(forms.Form):
         label="Confirm the Password",
         max_length=40,
         widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
+    def __init__(self, user=None, *args, **kwargs):
+        super(ProfileChangePasswordForm, self).__init__(*args, **kwargs)
+        self._user = user
+
+    def clean(self):
+        cleaned_data = super(ProfileChangePasswordForm, self).clean()
+
+        password1 = cleaned_data.get('password')
+        password2 = cleaned_data.get('confirmPassword')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords did not match.")
+
+        return cleaned_data
+
+    def clean_oldpassword(self):
+        oldpassword = self.cleaned_data.get('oldpassword')
+
+        if not check_password( oldpassword, self._user.password ):
+            raise forms.ValidationError("The password is not correct!")
+
+        return oldpassword

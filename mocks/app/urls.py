@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^schedule$', 'app.views.schedule'),
     url(r'^profile$', 'app.views.profile'),
     url(r'^profile-change$', 'app.views.profilechange'),
+    url(r'^password-change$', 'app.views.passwordchange'),
 
     url(r'^info/(?P<interviewId>[0-9]+)$', 'app.views.scheduleInterview', name='info'),
     url(r'^delete/(?P<interviewId>[0-9]+)$', 'app.views.deleteInterview', name='delete'),

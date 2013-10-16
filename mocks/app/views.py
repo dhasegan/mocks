@@ -150,7 +150,6 @@ def deleteInterview(request, interviewId):
         return render(request, 'pages/deleteInterview.html', context) 
     mockee = get_object_or_404(MUser, id=item.mockee.id)
     if (mocker.id == request.user.id) == (mockee.id == request.user.id):
-        print mocker.id == request.user.id, mockee.id == request.user.id
         context['errors'] = ["You cannot interfere with this item."]
         return render(request, 'pages/deleteInterview.html', context) 
     date = item.start
@@ -219,13 +218,35 @@ def profilechange(request):
     form = ProfileChangeForm(userid= request.user.id, data=request.POST)
     if not form.is_valid():
         context['form'] = form
-        print form.non_field_errors
         return render(request, 'pages/profilechange.html', context)
 
     user.username = form.cleaned_data['name']
     user.skypeId = form.cleaned_data['skypeId']
     user.description = form.cleaned_data['description']
     user.isMocker = form.cleaned_data['isMocker']
+    user.save()
+
+    return redirect('/profile')
+
+@login_required
+def passwordchange(request):
+    user = get_object_or_404(MUser, id=request.user.id)
+    context= {'page': 'profile'}
+    errors = []
+    context['form_submit'] = '/password-change'
+    context['form_button'] = 'Change Password'
+
+    if request.method == 'GET':
+        form = ProfileChangePasswordForm()
+        context['form'] = form
+        return render(request, 'pages/passwordchange.html', context)
+
+    form = ProfileChangePasswordForm(user=user, data=request.POST)
+    if not form.is_valid():
+        context['form'] = form
+        return render(request, 'pages/passwordchange.html', context)
+
+    user.set_password( form.cleaned_data['password'] )
     user.save()
 
     return redirect('/profile')
