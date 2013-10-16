@@ -1,4 +1,13 @@
-<form role="form" enctype="multipart/form-data" method="post" action="register" class="form-horizontal">
+<div class="form-non-field-errors">
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-error">
+          <span class="formerror"> {{error}} </span>
+        </div>
+    {% endfor %}
+</div>
+
+<form role="form" enctype="multipart/form-data" method="post" action="{{ form_submit }}" class="form-horizontal">
+
     {% for field in form.visible_fields %}
         {% include 'types/field.html' %}
     {% endfor %}
@@ -8,7 +17,7 @@
     {% csrf_token %}
     <div class="control-group">
         <div class="controls">
-            <button type="submit" class="btn" value="{{ form_submit }}"> {{ form_submit }} </button>
+            <button type="submit" class="btn" value="{{ form_button }}"> {{ form_button }} </button>
         </div>
     </div>
 </form>

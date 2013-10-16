@@ -110,6 +110,17 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+# Configures Django to merely print emails rather than sending them.
+# Comment out this line to enable real email-sending.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# To enable real email-sending, you should uncomment and 
+# configure the settings below.
+# EMAIL_HOST = 'Your-SMTP-host'               # perhaps 'smtp.andrew.cmu.edu'
+# EMAIL_HOST_USER = 'Your-SMTP-username'      # perhaps your Andrew ID
+# EMAIL_HOST_PASSWORD = 'Your-SMTP-password'
+# EMAIL_USE_TLS = True
+
 ROOT_URLCONF = 'mocks.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.

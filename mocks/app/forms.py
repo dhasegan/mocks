@@ -2,9 +2,10 @@ from django import forms
 
 from django.contrib.auth.models import User
 from models import *
+from django.contrib.auth import authenticate
 
 class RegisterForm(forms.Form):
-    email = forms.EmailField(
+    email = forms.CharField(
         label="Email Address",
         max_length=40,
         widget=forms.TextInput())
@@ -36,7 +37,7 @@ class RegisterForm(forms.Form):
 
 
     def clean(self):
-        cleaned_data = super(SignupForm, self).clean()
+        cleaned_data = super(RegisterForm, self).clean()
 
         password1 = cleaned_data.get('password')
         password2 = cleaned_data.get('confirmPassword')
@@ -44,19 +45,19 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError("Passwords did not match.")
 
         description = cleaned_data.get('description')
-        if not cleaned_data.get('isMocker') and (not description or len(description) == 0) :
+        if cleaned_data.get('isMocker') and (not description or len(description) == 0):
             raise forms.ValidationError("If you want to give mock interviews please provide a description about yourself")
 
         return cleaned_data
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
-        for ch in username.encode('utf8'):
+        for ch in name.encode('utf8'):
             if not str.isalpha(ch) and not ch == ' ':
-                raise forms.ValidationError('Your name can only be made of characters a-z or A-Z " ".')
-        if MUser.objects.filter(username__exact=username):
+                raise forms.ValidationError('Your name can only be made of characters a-z, A-Z or space.')
+        if MUser.objects.filter(username__exact=name):
             raise forms.ValidationError("Your name is already taken.")
-        return username
+        return name
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -65,7 +66,7 @@ class RegisterForm(forms.Form):
         return email
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(
+    email = forms.CharField(
         label="Email Address",
         max_length=40,
         widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -75,11 +76,14 @@ class LoginForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     def clean(self):
-        cleaned_data = super(SignupForm, self).clean()
+        cleaned_data = super(LoginForm, self).clean()
 
         email = cleaned_data.get('email')
         password = cleaned_data.get('password')
-        user = authenticate(email=email, password=password)
+        muser = MUser.objects.filter(email__exact=email)
+        if len(muser) != 1:
+            raise forms.ValidationError("Invalid email and/or password!")
+        user = authenticate(username=muser[0].username, password=password)
         if user is None:
             raise forms.ValidationError("Invalid email and/or password!")
         if not user.is_active:

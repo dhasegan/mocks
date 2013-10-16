@@ -2,7 +2,6 @@
 /* 
     Forms Related
 */
-
-.controls #id_email {
+.control-group .controls #id_email {
     max-width: 120px;
 }

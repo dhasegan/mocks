@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse
 
@@ -27,11 +27,13 @@ import json
 from app.models import *
 from app.forms import *
 
+SCHOOL_ADDRESS = "@jacobs-university.de"
+
 @login_required
 def home(request):
     # Sets up list of just the logged-in user's (request.user's) items
     context = { 'page': 'home' }
-    user = GrumblrUser.objects.filter(username=request.user.username)[0]
+    user = MUser.objects.filter(username=request.user.username)[0]
 
     following = user.following.all()
     items = []
@@ -74,55 +76,116 @@ def home(request):
 #     context['thisuser'] = user
 #     return render(request, 'pages/profile.html', context)
 
-@login_required
-def profile_change(request, username, attr):
-    if (username != request.user.username):
-        return redirect('/')
-    context = {}
-    errors = []
-    user = GrumblrUser.objects.filter(username=username)[0]
-    if request.method != 'POST':
-        errors.append('Error processing the request!')
-        return create_profile_edit_view(request, request.user, {'errors': errors})
-    if not attr in request.POST or not request.POST[attr]:
-        errors.append('No value provided!')
-        return create_profile_edit_view(request, request.user, {'errors': errors})
-
-    setattr(user, attr, request.POST[attr])
-    user.save()
-
-    return redirect('/user/' + username + '/edit/')
-
 # @login_required
-# def gr_logout(request):
-#     if request.user:
-#         user = request.user
-#     logout(request)
-#     return redirect('/')
+# def profile_change(request, username, attr):
+#     if (username != request.user.username):
+#         return redirect('/')
+#     context = {}
+#     errors = []
+#     user = GrumblrUser.objects.filter(username=username)[0]
+#     if request.method != 'POST':
+#         errors.append('Error processing the request!')
+#         return create_profile_edit_view(request, request.user, {'errors': errors})
+#     if not attr in request.POST or not request.POST[attr]:
+#         errors.append('No value provided!')
+#         return create_profile_edit_view(request, request.user, {'errors': errors})
+
+#     setattr(user, attr, request.POST[attr])
+#     user.save()
+
+#     return redirect('/user/' + username + '/edit/')
+
+@login_required
+def mlogout(request):
+    if request.user:
+        user = request.user
+    logout(request)
+    return redirect('/')
 
 def mlogin(request):
     context = { 'page': "login" }
+    context['form_submit'] = 'login'
+    context['form_button'] = 'Login'
 
     if request.method == 'GET':
         form = LoginForm()
         context['form'] = form
-        context['form_submit'] = 'Login'
         return render(request, 'pages/login.html', context)
 
-    return render(request, "pages/login.html", context)
+    form = LoginForm(request.POST)
 
+    if not form.is_valid():
+        context['form'] = form
+        errors = form.non_field_errors;
+        return render(request, 'pages/login.html', context)
+
+    user = get_object_or_404(MUser, email= form.cleaned_data['email'])
+    user = authenticate(username=user.username, password=form.cleaned_data['password'])
+    login(request, user)
+
+    return redirect('/')
 
 def mregister(request):
     context = { 'page': "register" }
+    context['form_submit'] = 'register'
+    context['form_button'] = 'Register'
 
-    if request.method == 'GET':
+    if request.method == 'GET' or not request.method == 'POST':
         form = RegisterForm()
         context['form'] = form
-        context['form_submit'] = 'Register'
+        context['form_submit'] = 'register'
         return render(request, 'pages/register.html', context)
 
 
-    return render(request, "pages/register.html", context)
+    form = RegisterForm(request.POST)
+
+    if not form.is_valid():
+        context['form'] = form
+        errors = form.non_field_errors;
+        return render(request, 'pages/register.html', context)
+
+    new_user = MUser.objects.create_user(
+                        username=form.cleaned_data['name'],
+                        password=form.cleaned_data['password'],
+                        email=form.cleaned_data['email'],
+                        description=form.cleaned_data['description'],
+                        skypeId=form.cleaned_data['skypeId'],
+                        isMocker=form.cleaned_data['isMocker'])
+    new_user.is_active = False
+    new_user.save()
+
+    return sendConfirmationEmail(request, new_user, context)
+
+def confirm_registration(request, emailId, token):
+    user = get_object_or_404(MUser, email=emailId)
+
+    if not default_token_generator.check_token(user, token):
+        raise Http404
+
+    user.is_active = True
+    user.save()
+
+    return redirect('/login')
+
+def sendConfirmationEmail(request, new_user, context):
+    token = default_token_generator.make_token(new_user)
+
+    email_body = """
+Welcome to the Mocks! We want everyone to have a registered email address.
+Please click the link below to verify your email address and complete the registration of your account:
+
+  http://%s%s
+""" % (request.get_host(),
+       reverse('confirmEmail', args=(new_user.email, token)))
+
+    send_mail(subject="Verify your email address",
+              message= email_body,
+              from_email="donotreply" + SCHOOL_ADDRESS,
+              recipient_list=[new_user.email + SCHOOL_ADDRESS ])
+
+    context['email'] = new_user.email + SCHOOL_ADDRESS
+    return render(request, 'pages/emailconfirm.html', context)
+
 
 # def gr_login(request):
 #     if request.user:
@@ -205,17 +268,3 @@ def mregister(request):
 #     context['email'] = form.cleaned_data['email']
 #     return render(request, 'pages/needs-confirmation.html', context)
 
-
-# def confirm_registration(request, username, token):
-#     user = GrumblrUser.objects.filter(username=username)
-#     if len(user) != 1:
-#         raise Http404
-#     user = user[0]
-
-#     if not default_token_generator.check_token(user, token):
-#         raise Http404
-
-#     user.is_active = True
-#     user.save()
-
-#     return redirect('/login')
