@@ -1,0 +1,9 @@
+.form-horizontal .control-label {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+.form-horizontal .controls {
+    display: inline-block;
+    margin-left: 20px;
+}

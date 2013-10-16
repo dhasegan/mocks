@@ -1,0 +1,6 @@
+{% extends "pages/base.html" %}
+
+{% block navpills %}
+    <li {% if page == "login" %} class="active" {% endif %} ><a class="login-link" href="#">Login</a></li>
+    <li {% if page == "register" %} class="active" {% endif %} ><a class="register-link" href="#">Register</a></li>
+{% endblock %}

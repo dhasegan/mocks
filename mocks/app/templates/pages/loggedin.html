@@ -1,0 +1,14 @@
+{% extends "pages/base.html" %}
+
+{% block nav-pills %}
+    
+    <li {% if page == "home" %} class="active" {% endif %} ><a class="home-link" href="#">Get Interviews</a></li>
+    <li {% if page == "schedule" %} class="active" {% endif %} ><a class="schedule-link" href="#">Schedule</a></li>
+    <li {% if page == "profile" %} class="active" {% endif %} ><a class="profile-link" href="#">Profile</a></li>
+
+    
+    <p class="navbar-text pull-right">
+    <a href="#" class="navbar-link logout">Logged</a>
+    </p>
+
+{% endblock nav-pills %}

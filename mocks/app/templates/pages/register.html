@@ -1,0 +1,34 @@
+{% extends "pages/loggedout.html" %}
+
+{% block content %}
+  <div class="login-box">
+    <div class="login-form">
+      <form role="form" enctype="multipart/form-data" method="post" action="register" class="form-horizontal">
+        {% for field in form.visible_fields %}
+            <div class="control-group">
+                <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                <span class="required-label">
+                    {% if field.field.required %}*{% endif %}
+                </span>
+                <div class="controls ">
+                {% if field.id_for_label == 'id_email' %} <div class="input-append"> {% endif %}
+                    {{field}}
+                    {% if field.id_for_label == "id_email" %}
+                        <span class="add-on">@jacobs-university.de</span>
+                    {% endif %}
+                    {% for error in field.errors %} 
+                      <span class="formerror"> {{error}} </span>
+                    {% endfor %}
+                </div>
+                {% if field.id_for_label == 'id_email' %} </div> {% endif %}
+            </div>
+        {% endfor %}
+        {% for field in form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+        {% csrf_token %}
+        <button type="submit" class="btn btn-default" value="signup">Signup</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

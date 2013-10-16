@@ -100,6 +100,21 @@ def profile_change(request, username, attr):
 #     logout(request)
 #     return redirect('/')
 
+def mlogin(request):
+    context = { 'page': "login" }
+    return render(request, "pages/login.html", context)
+
+
+def mregister(request):
+    context = { 'page': "register" }
+
+    if request.method == 'GET':
+        form = SignupForm()
+        context['form'] = form
+        return render(request, 'pages/register.html', context)
+
+
+    return render(request, "pages/register.html", context)
 
 # def gr_login(request):
 #     if request.user:

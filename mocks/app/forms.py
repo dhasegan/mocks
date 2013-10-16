@@ -7,7 +7,7 @@ class SignupForm(forms.Form):
     email = forms.EmailField(
         label="Email Address",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control'}))
+        widget=forms.TextInput())
     name = forms.CharField(
         label="Real Name",
         max_length=40,
@@ -20,16 +20,16 @@ class SignupForm(forms.Form):
         label="Confirm the Password",
         max_length=40,
         widget=forms.PasswordInput(attrs={'class':'form-control'}))
-    description = forms.CharField(
-        required=False,
-        label="For what companies you want to apply or companies that you applied and want to share experience about",
-        max_length=400,
-        widget=forms.Textarea(attrs={'class':'form-control'}))
     skypeId = forms.CharField(
         required=False,
         label="Skype Id",
         max_length=40,
         widget=forms.TextInput(attrs={'class':'form-control'}))
+    description = forms.CharField(
+        required=False,
+        label="For what companies you want to apply or companies that you applied for which you want to share your experience",
+        max_length=400,
+        widget=forms.Textarea(attrs={'class':'form-control'}))
     isMocker = forms.BooleanField(
         required=False,
         label="Do you want to give mock interviews to other students? If yes, please give a good description in the field above.")
