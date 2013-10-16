@@ -1,0 +1,14 @@
+<form role="form" enctype="multipart/form-data" method="post" action="register" class="form-horizontal">
+    {% for field in form.visible_fields %}
+        {% include 'types/field.html' %}
+    {% endfor %}
+    {% for field in form.hidden_fields %}
+      {{ field }}
+    {% endfor %}
+    {% csrf_token %}
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn" value="{{ form_submit }}"> {{ form_submit }} </button>
+        </div>
+    </div>
+</form>

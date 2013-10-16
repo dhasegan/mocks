@@ -102,6 +102,13 @@ def profile_change(request, username, attr):
 
 def mlogin(request):
     context = { 'page': "login" }
+
+    if request.method == 'GET':
+        form = LoginForm()
+        context['form'] = form
+        context['form_submit'] = 'Login'
+        return render(request, 'pages/login.html', context)
+
     return render(request, "pages/login.html", context)
 
 
@@ -109,8 +116,9 @@ def mregister(request):
     context = { 'page': "register" }
 
     if request.method == 'GET':
-        form = SignupForm()
+        form = RegisterForm()
         context['form'] = form
+        context['form_submit'] = 'Register'
         return render(request, 'pages/register.html', context)
 
 

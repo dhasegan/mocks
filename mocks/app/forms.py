@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from models import *
 
-class SignupForm(forms.Form):
+class RegisterForm(forms.Form):
     email = forms.EmailField(
         label="Email Address",
         max_length=40,

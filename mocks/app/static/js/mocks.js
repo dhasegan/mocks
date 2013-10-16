@@ -1,5 +1,7 @@
 
-
+/*
+    Links
+*/
 $('.login-link').click(
   function() {
     window.location.href = "/login";
