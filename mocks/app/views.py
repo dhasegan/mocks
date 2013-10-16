@@ -321,6 +321,14 @@ def confirm_registration(request, emailId, token):
 
     return redirect('/login')
 
+def about(request):
+    context = {}
+    if request.user.is_authenticated():
+        context['basetemplate'] = "pages/loggedin.html"
+    else:
+        context['basetemplate'] = "pages/loggedout.html"
+    return render(request, "pages/about.html", context)
+
 def sendConfirmationEmail(request, new_user, context):
     token = default_token_generator.make_token(new_user)
 

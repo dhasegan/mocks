@@ -5,3 +5,17 @@
 .control-group .controls #id_email {
     max-width: 120px;
 }
+
+/*
+    Footer related
+ */
+.lasthr {
+    margin-bottom: 0px;
+}
+.footer {
+    font-size: 10px;
+    float: right;
+}
+.footeritem {
+    margin-left: 20px;
+}
