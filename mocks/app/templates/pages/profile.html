@@ -1,0 +1,32 @@
+{% extends "pages/loggedin.html" %}
+
+{% block content %}
+    <div class="nameattr">
+        <span class="attr"> Name: </span>
+        <span class="val"> {{ user.username }} </span>
+    </div>
+    <div class="emailattr">
+        <span class="attr"> Email: </span>
+        <span class="val"> {{ user.email }} </span>
+    </div>
+    {% if user.skypeId %}
+        <div class="skypeidattr">
+            <span class="attr"> Skype Id: </span>
+            <span class="val"> {{ user.skypeId }} </span>
+        </div>
+    {% endif %}
+    {% if user.skypeId %}
+    <div class="detailsattr">
+        <div class="attr"> Description: </div>
+        <div class="val"> {{ user.description }} </div>
+    </div>
+    {% endif %}
+    <div class="mockerattr">
+        <span class="attr"> Giving interviews: </span>
+        <span class="val"> {{ user.isMocker }} </span>
+    </div>
+
+    <button class="btn btn-primary moreinfo-btn" type="button" value="/profile-change"> 
+        Change profile details
+    </button>
+{% endblock %}

@@ -4,7 +4,11 @@
     
     <li {% if page == "home" %} class="active" {% endif %} ><a class="home-link" href="#">Get Interviews</a></li>
     <li {% if page == "schedule" %} class="active" {% endif %} ><a class="schedule-link" href="#">Schedule</a></li>
-    <li {% if page == "createslot" %} class="active" {% endif %} ><a class="createslot-link" href="#">Create Slot</a></li>
+    {% if request.user.isMocker %}
+        <li {% if page == "createslot" %} class="active" {% endif %} >
+            <a class="createslot-link" href="#">Create Slot</a>
+        </li>
+    {% endif %}
     <li {% if page == "profile" %} class="active" {% endif %} ><a class="profile-link" href="#">Profile</a></li>
 
 {% endblock navpills %}

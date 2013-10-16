@@ -82,6 +82,8 @@ def schedule(request):
 def createslot(request):
     context = { 'page': 'createslot' }
     user = get_object_or_404(MUser, username=request.user.username)
+    if not user.isMocker:
+        raise Http404
     context['form_submit'] = 'createslot'
     context['form_button'] = 'Create'
 
@@ -189,55 +191,33 @@ def deleteInterview(request, interviewId):
             Let your interviewer know that you don't have the time to attend the mock interview by emailing him at: """ + mocker.email + SCHOOL_ADDRESS
     return render(request, 'pages/deleteInterview.html', context)
 
-# @login_required
-# def profile(request, username):
-#     context = { 'page': 'profile' }
-#     if (username == request.user.username):
-#         context['page'] = 'ownprofile'
-#     user = GrumblrUser.objects.filter(username=username)[0]
-#     context['grumblruser'] = user
+@login_required
+def profile(request):
+    user = get_object_or_404(MUser, id=request.user.id)
+    context= {'page': 'profile'}
 
-#     nr_following = len(user.following.all())
-#     nr_followers = len(user.followers.all())
-#     nr_dislikes = calculateDislikes(user)
-#     context['aboutitems'] = [{'attr': 'Real Name', 'value': user.realname}, \
-#                              {'attr': 'City', 'value': user.city}, \
-#                              {'attr': 'Email', 'value': user.email}, \
-#                              {'attr': 'Twitter', 'value': user.twitter}, \
-#                              {'attr': 'Facebook', 'value': user.facebook}, ]
-#     context['statsitems'] = [{'attr': 'Following', 'value': nr_following}, \
-#                              {'attr': 'Followers', 'value': nr_followers}, \
-#                              {'attr': 'Dislikes', 'value': nr_dislikes}, ]
+    context['user'] = user
 
-#     if username == request.user.username:
-#         context['statsitems'][0]['link'] = 'following'
-#         context['statsitems'][1]['link'] = 'followers'
+    return render(request, 'pages/profile.html', context)
 
-#     items = []
-#     items.extend(Grumblr.objects.filter(user=user))
-#     items = setGrumblrsContext(items, user)
-#     context['grumblrs'] = sorted(items, key=lambda gr:gr.date, reverse=True)
-#     context['thisuser'] = user
-#     return render(request, 'pages/profile.html', context)
+@login_required
+def profilechange(request):
+    user = get_object_or_404(MUser, id=request.user.id)
+    context= {'page': 'profile'}
+    errors = []
+    context['form_submit'] = '/profile-change'
+    context['form_button'] = 'Change Profile'
 
-# @login_required
-# def profile_change(request, username, attr):
-#     if (username != request.user.username):
-#         return redirect('/')
-#     context = {}
-#     errors = []
-#     user = GrumblrUser.objects.filter(username=username)[0]
-#     if request.method != 'POST':
-#         errors.append('Error processing the request!')
-#         return create_profile_edit_view(request, request.user, {'errors': errors})
-#     if not attr in request.POST or not request.POST[attr]:
-#         errors.append('No value provided!')
-#         return create_profile_edit_view(request, request.user, {'errors': errors})
+    if request.method == 'GET':
+        form = ProfileChangeForm()
+        context['form'] = form
+        print context['form']
+        # context['form']['name'] = user.username
+        return render(request, 'pages/profilechange.html', context)
 
-#     setattr(user, attr, request.POST[attr])
-#     user.save()
+    form = ProfileChangeForm(request.POST)
 
-#     return redirect('/user/' + username + '/edit/')
+    return redirect('/profile')
 
 @login_required
 def mlogout(request):
@@ -315,7 +295,9 @@ def sendConfirmationEmail(request, new_user, context):
     token = default_token_generator.make_token(new_user)
 
     email_body = """
-Welcome to the Mocks! We want everyone to have a registered email address.
+Welcome to Mocks, the place where you get mock interviews for free (for now at least) from other
+students that want to give those interviews! We want everyone to have a registered email address to make 
+available for Jacobs student only.
 Please click the link below to verify your email address and complete the registration of your account:
 
   http://%s%s
