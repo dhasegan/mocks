@@ -23,7 +23,7 @@
     {% endif %}
     <div class="mockerattr">
         <span class="attr"> Giving interviews: </span>
-        <span class="val"> {{ user.isMocker }} </span>
+        <span class="val"> {% if user.isMocker %} Yes {% else %} No {% endif %}</span>
     </div>
 
     <button class="btn btn-primary moreinfo-btn" type="button" value="/profile-change"> 

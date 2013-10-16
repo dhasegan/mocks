@@ -83,7 +83,7 @@ def createslot(request):
     context = { 'page': 'createslot' }
     user = get_object_or_404(MUser, username=request.user.username)
     if not user.isMocker:
-        raise Http404
+        return render(request, 'pages/createslot.html', context)
     context['form_submit'] = 'createslot'
     context['form_button'] = 'Create'
 

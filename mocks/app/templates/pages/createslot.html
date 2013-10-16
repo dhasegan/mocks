@@ -1,7 +1,13 @@
 {% extends "pages/loggedin.html" %}
 
 {% block content %}
-    <div class="createslot-form">
-        {% include 'types/form.html' %}
-    </div>
+    {% if form %}
+        <div class="createslot-form">
+            {% include 'types/form.html' %}
+        </div>
+    {% else %}
+        <div class="alert">
+            Sorry! You cannot create mock interview items. If you want to give interviews please change your settings from the Profile page.
+        </div>
+    {% endif %}
 {% endblock content %}
