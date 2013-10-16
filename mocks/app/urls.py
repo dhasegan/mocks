@@ -7,5 +7,7 @@ urlpatterns = patterns('',
     url(r'^confirm-registration/(?P<emailId>\w+)/(?P<token>[a-z0-9\-]+)$', 'app.views.confirm_registration', name='confirmEmail'),
 
     url(r'^$', 'app.views.home', name='home'),
-    # url(r'^scheduled$', 'app.views.scheduled'),
+    url(r'^home$', 'app.views.home', name='home'),
+    url(r'^createslot$', 'app.views.createslot'),
+    url(r'^schedule$', 'app.views.schedule'),
 )

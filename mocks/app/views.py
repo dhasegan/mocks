@@ -20,7 +20,7 @@ from django.core.mail import send_mail
 # Template shortcuts
 from django.template import RequestContext, loader
 
-from datetime import datetime
+import datetime
 from mimetypes import guess_type
 import json
 
@@ -29,21 +29,76 @@ from app.forms import *
 
 SCHOOL_ADDRESS = "@jacobs-university.de"
 
+def getAvailableMockInterviews():
+    items = []
+    allitems = Interview.objects.all()
+    for item in allitems:
+        if not item.mockee:
+            mocker = MUser.objects.filter(id = item.mocker.id)[0]
+            date = item.start
+            items.append( { 
+                'mocker': mocker,
+                'date': date 
+            })
+    return sorted( items, key=lambda it:it['date'], reverse=True)
+
+def getScheduledMockInterviews(user):
+    items = []
+    allitems = Interview.objects.all()
+    for item in allitems:
+        if item.mockee == user or item.mocker == user:
+            mocker = MUser.objects.filter(id = item.mocker.id)[0]
+            if item.mockee:
+                mockee = MUser.objects.filter(id = item.mockee.id)[0]
+            date = item.start
+            items.append( { 
+                'mocker': mocker,
+                'date': date 
+            })
+    return sorted( items, key=lambda it:it['date'], reverse=True)
+
 @login_required
 def home(request):
-    # Sets up list of just the logged-in user's (request.user's) items
     context = { 'page': 'home' }
-    user = MUser.objects.filter(username=request.user.username)[0]
+    user = get_object_or_404(MUser, username=request.user.username)
 
-    following = user.following.all()
-    items = []
-    items.extend(Grumblr.objects.filter(user=user))
+    context['items'] = getAvailableMockInterviews()
+    return render(request, 'pages/home.html', context)
 
-    items = setGrumblrsContext(items, user)
-    context['grumblrs'] = sorted(items, key=lambda gr:gr.date, reverse=True)
-    context['grumblr_post'] = True
-    context['thisuser'] = user
-    return render(request, 'pages/index.html', context)
+@login_required
+def schedule(request):
+    context = { 'page': 'schedule' }
+    user = get_object_or_404(MUser, username=request.user.username)
+
+    context['items'] = getScheduledMockInterviews(user)
+    return render(request, 'pages/home.html', context)
+
+@login_required
+def createslot(request):
+    context = { 'page': 'createslot' }
+    user = get_object_or_404(MUser, username=request.user.username)
+    context['form_submit'] = 'createslot'
+    context['form_button'] = 'Create'
+
+    if request.method == 'GET' or request.method != 'POST':
+        form = CreateSlotForm()
+        context['form'] = form
+        return render(request, 'pages/createslot.html', context)
+
+    form = CreateSlotForm(request.POST)
+
+    if not form.is_valid():
+        context['form'] = form
+        errors = form.non_field_errors;
+        return render(request, 'pages/createslot.html', context)
+
+    # date = context['date']
+    # time = context['time']
+    # dt = datetime.datetime.combine(date, time)
+    mockInterview = Interview(mocker=user, start=form.cleaned_data['datetime'])
+    mockInterview.save()
+
+    return redirect('/schedule')
 
 # @login_required
 # def profile(request, username):

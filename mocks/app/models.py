@@ -13,7 +13,7 @@ class MUser(User):
 
 class Interview(models.Model):
     mocker = models.ForeignKey(MUser, related_name="mer")
-    mockee = models.ForeignKey(MUser, related_name="mee")
+    mockee = models.ForeignKey(MUser, related_name="mee", null=True, blank=True)
     start = models.DateTimeField()
 
     def __unicode__(self):

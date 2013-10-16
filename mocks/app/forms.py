@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from models import *
 from django.contrib.auth import authenticate
 
+# Datetime handler
+import datetime
+
 class RegisterForm(forms.Form):
     email = forms.CharField(
         label="Email Address",
@@ -89,3 +92,40 @@ class LoginForm(forms.Form):
         if not user.is_active:
             raise forms.ValidationError("Your account may not be activated! Try checking your email!")
         return cleaned_data
+
+class CreateSlotForm(forms.Form):
+    date = forms.DateField(
+        label="When do you want to set up the mock interview? (MM/DD/YY)",
+        required=True)
+    time = forms.TimeField(
+        label="At what time? Please input the time in Germany's timezone. (HH:MM)",
+        required=True)
+
+    def clean(self):
+        date = self.cleaned_data.get('date')
+        if type(date) != datetime.date:
+            raise forms.ValidationError("""
+                The date format you set is not correct. Please use one of those formats:
+                '10/25/06',
+                '10/25/2006' or
+                '2006-10-25'
+                """)
+        time = self.cleaned_data.get('time')
+        if type(time) != datetime.time:
+            raise forms.ValidationError("""
+                The time format you set is not correct. Please use one of those formats:
+                '14:30' or
+                '14:30:59'
+                """)
+        dt = datetime.datetime.combine(date, time)
+        if dt < datetime.datetime.now():
+            raise forms.ValidationError("""
+                The date and time you set is in the past. Please insert a valid input.
+                """)
+        if dt > datetime.datetime.now() + datetime.timedelta(weeks=4):
+            raise forms.ValidationError("""
+                The date and time you set is in too far in the future. 
+                Please insert a date that is not more that 1 month in the future.
+                """)
+        self.cleaned_data['datetime'] = dt
+        return self.cleaned_data
