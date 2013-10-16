@@ -13,7 +13,7 @@ class RegisterForm(forms.Form):
         max_length=40,
         widget=forms.TextInput())
     name = forms.CharField(
-        label="Real Name",
+        label="Name",
         max_length=40,
         widget=forms.TextInput(attrs={'class':'form-control'}))
     password = forms.CharField(
@@ -56,8 +56,8 @@ class RegisterForm(forms.Form):
     def clean_name(self):
         name = self.cleaned_data.get('name')
         for ch in name.encode('utf8'):
-            if not str.isalpha(ch) and not ch == ' ':
-                raise forms.ValidationError('Your name can only be made of characters a-z, A-Z or space.')
+            if not str.isalpha(ch) and not ch == ' ' and not str.isdigit(ch):
+                raise forms.ValidationError('Your name can only be made of characters a-z, A-Z, 0-9 or space.')
         if MUser.objects.filter(username__exact=name):
             raise forms.ValidationError("Your name is already taken.")
         return name
@@ -66,6 +66,9 @@ class RegisterForm(forms.Form):
         email = self.cleaned_data.get('email')
         if MUser.objects.filter(email__exact=email):
             raise forms.ValidationError("Email is already used.")
+        for ch in email.encode('utf8'):
+            if not str.isalpha(ch) and not str.isdigit(ch) and not ch == '.':
+                raise forms.ValidationError('Your name can only be made of characters a-z, A-Z, 0-9 or dot(".")')
         return email
 
 class LoginForm(forms.Form):
@@ -139,20 +142,10 @@ class DeleteInterviewForm(forms.Form):
 
 class ProfileChangeForm(forms.Form):
     name = forms.CharField(
-        required=False,
-        label="Real Name",
+        required=True,
+        label="Name",
         max_length=40,
         widget=forms.TextInput(attrs={'class':'form-control'}))
-    password = forms.CharField(
-        required=False,
-        label="Password",
-        max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
-    confirmPassword = forms.CharField(
-        required=False,
-        label="Confirm the Password",
-        max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
     skypeId = forms.CharField(
         required=False,
         label="Skype Id",
@@ -167,14 +160,12 @@ class ProfileChangeForm(forms.Form):
         required=False,
         label="Do you want to give mock interviews to other students? If yes, please give a good description in the field above.")
 
+    def __init__(self, userid=None, *args, **kwargs):
+        super(ProfileChangeForm, self).__init__(*args, **kwargs)
+        self._userid = userid
 
     def clean(self):
-        cleaned_data = super(RegisterForm, self).clean()
-
-        password1 = cleaned_data.get('password')
-        password2 = cleaned_data.get('confirmPassword')
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords did not match.")
+        cleaned_data = super(ProfileChangeForm, self).clean()
 
         description = cleaned_data.get('description')
         if cleaned_data.get('isMocker') and (not description or len(description) == 0):
@@ -185,14 +176,25 @@ class ProfileChangeForm(forms.Form):
     def clean_name(self):
         name = self.cleaned_data.get('name')
         for ch in name.encode('utf8'):
-            if not str.isalpha(ch) and not ch == ' ':
-                raise forms.ValidationError('Your name can only be made of characters a-z, A-Z or space.')
-        if MUser.objects.filter(username__exact=name):
-            raise forms.ValidationError("Your name is already taken.")
+            if not str.isalpha(ch) and not ch == ' ' and not str.isdigit(ch):
+                raise forms.ValidationError('Your name can only be made of characters a-z, A-Z, 0-9 or space.')
+        if MUser.objects.filter(username__exact=name).exclude(id = self._userid):
+            raise forms.ValidationError("The name is already taken.")
         return name
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if MUser.objects.filter(email__exact=email):
-            raise forms.ValidationError("Email is already used.")
-        return email
+class ProfileChangePasswordForm(forms.Form):
+    oldpassword = forms.CharField(
+        required=True,
+        label="Old Password",
+        max_length=40,
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password = forms.CharField(
+        required=True,
+        label="Password",
+        max_length=40,
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    confirmPassword = forms.CharField(
+        required=True,
+        label="Confirm the Password",
+        max_length=40,
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))

@@ -96,7 +96,6 @@ def createslot(request):
 
     if not form.is_valid():
         context['form'] = form
-        errors = form.non_field_errors;
         return render(request, 'pages/createslot.html', context)
 
     mockInterview = Interview(mocker=user, start=form.cleaned_data['datetime'])
@@ -177,7 +176,6 @@ def deleteInterview(request, interviewId):
 
     if not form.is_valid():
         context['form'] = form
-        errors = form.non_field_errors;
         return render(request, 'pages/deleteInterview.html', context)
 
     if mocker.id == request.user.id:
@@ -206,16 +204,29 @@ def profilechange(request):
     context= {'page': 'profile'}
     errors = []
     context['form_submit'] = '/profile-change'
-    context['form_button'] = 'Change Profile'
+    context['form_button'] = 'Change Profile Details'
 
     if request.method == 'GET':
-        form = ProfileChangeForm()
+        form = ProfileChangeForm(initial={
+            'name': user.username,
+            'skypeId': user.skypeId,
+            'description': user.description,
+            'isMocker': user.isMocker,
+        })
         context['form'] = form
-        print context['form']
-        # context['form']['name'] = user.username
         return render(request, 'pages/profilechange.html', context)
 
-    form = ProfileChangeForm(request.POST)
+    form = ProfileChangeForm(userid= request.user.id, data=request.POST)
+    if not form.is_valid():
+        context['form'] = form
+        print form.non_field_errors
+        return render(request, 'pages/profilechange.html', context)
+
+    user.username = form.cleaned_data['name']
+    user.skypeId = form.cleaned_data['skypeId']
+    user.description = form.cleaned_data['description']
+    user.isMocker = form.cleaned_data['isMocker']
+    user.save()
 
     return redirect('/profile')
 
@@ -240,7 +251,6 @@ def mlogin(request):
 
     if not form.is_valid():
         context['form'] = form
-        errors = form.non_field_errors;
         return render(request, 'pages/login.html', context)
 
     user = get_object_or_404(MUser, email= form.cleaned_data['email'])
@@ -265,7 +275,6 @@ def mregister(request):
 
     if not form.is_valid():
         context['form'] = form
-        errors = form.non_field_errors;
         return render(request, 'pages/register.html', context)
 
     new_user = MUser.objects.create_user(
