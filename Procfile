@@ -1,1 +1,1 @@
-web: gunicorn mocks.wsgi
+web: python manage.py collectstatic --noinput; gunicorn mocks.wsgi
