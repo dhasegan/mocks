@@ -1,29 +1,29 @@
 {% extends "pages/loggedin.html" %}
 
 {% block content %}
-    <div class="nameattr">
-        <span class="attr"> Name: </span>
-        <span class="val"> {{ user.username }} </span>
+    <div class="nameattr row-fluid">
+        <span class="attr span3"> Name: </span>
+        <span class="val span9"> {{ user.username }} </span>
     </div>
-    <div class="emailattr">
-        <span class="attr"> Email: </span>
-        <span class="val"> {{ user.email }} </span>
+    <div class="emailattr row-fluid">
+        <span class="attr span3"> Email: </span>
+        <span class="val span9"> {{ user.email }} </span>
     </div>
     {% if user.skypeId %}
-        <div class="skypeidattr">
-            <span class="attr"> Skype Id: </span>
-            <span class="val"> {{ user.skypeId }} </span>
+        <div class="skypeidattr row-fluid">
+            <span class="attr span3"> Skype Id: </span>
+            <span class="val span9"> {{ user.skypeId }} </span>
         </div>
     {% endif %}
     {% if user.skypeId %}
-    <div class="detailsattr">
-        <div class="attr"> Description: </div>
-        <div class="val"> {{ user.description }} </div>
+    <div class="detailsattr row-fluid">
+        <div class="attr span3"> Description: </div>
+        <div class="val span9"> {{ user.description }} </div>
     </div>
     {% endif %}
-    <div class="mockerattr">
-        <span class="attr"> Giving interviews: </span>
-        <span class="val"> {% if user.isMocker %} Yes {% else %} No {% endif %}</span>
+    <div class="mockerattr row-fluid">
+        <span class="attr span3"> Giving interviews: </span>
+        <span class="val span9"> {% if user.isMocker %} Yes {% else %} No {% endif %}</span>
     </div>
 
     <button class="btn btn-primary moreinfo-btn" type="button" value="/profile-change"> 

@@ -6,7 +6,7 @@
     {% endfor %}
 </div>
 
-<form role="form" enctype="multipart/form-data" method="post" action="{{ form_submit }}" class="form-horizontal">
+<form role="form" enctype="multipart/form-data" method="post" action="{{ form_submit }}" class="form-horizontal mock-form">
 
     {% for field in form.visible_fields %}
         {% include 'types/field.html' %}
@@ -16,8 +16,8 @@
     {% endfor %}
     {% csrf_token %}
     <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn" value="{{ form_button }}"> {{ form_button }} </button>
+        <div class="controls mock-controls">
+            <button type="submit" class="btn mock-long-btn" value="{{ form_button }}"> {{ form_button }} </button>
         </div>
     </div>
 </form>

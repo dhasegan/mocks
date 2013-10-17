@@ -21,25 +21,25 @@ class RegisterForm(forms.Form):
     name = forms.CharField(
         label="Name",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control'}))
+        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
     password = forms.CharField(
         label="Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
     confirmPassword = forms.CharField(
         label="Confirm the Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
     skypeId = forms.CharField(
         required=False,
         label="Skype Id",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control'}))
+        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
     description = forms.CharField(
         required=False,
         label="For what companies you want to apply or companies that you applied for which you want to share your experience",
         max_length=400,
-        widget=forms.Textarea(attrs={'class':'form-control'}))
+        widget=forms.Textarea(attrs={'class':'form-control mock-text'}))
     isMocker = forms.BooleanField(
         required=False,
         label="Do you want to give mock interviews to other students? If yes, please give a good description in the field above.")
@@ -81,11 +81,11 @@ class LoginForm(forms.Form):
     email = forms.CharField(
         label="Email Address",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control'}))
+        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
     password = forms.CharField(
         label="Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
 
     def clean(self):
         cleaned_data = super(LoginForm, self).clean()
@@ -105,10 +105,12 @@ class LoginForm(forms.Form):
 class CreateSlotForm(forms.Form):
     date = forms.DateField(
         label="When do you want to set up the mock interview? (MM/DD/YY)",
-        required=True)
+        required=True,
+        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
     time = forms.TimeField(
         label="At what time? Please input the time in Germany's timezone. (HH:MM)",
-        required=True)
+        required=True,
+        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
 
     def clean(self):
         date = self.cleaned_data.get('date')
@@ -144,24 +146,24 @@ class DeleteInterviewForm(forms.Form):
         required=True,
         label="Why do you want to delete this mock interview?",
         max_length=400,
-        widget=forms.Textarea(attrs={'class':'form-control'}))
+        widget=forms.Textarea(attrs={'class':'form-control mock-text'}))
 
 class ProfileChangeForm(forms.Form):
     name = forms.CharField(
         required=True,
         label="Name",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control'}))
+        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
     skypeId = forms.CharField(
         required=False,
         label="Skype Id",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control'}))
+        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
     description = forms.CharField(
         required=False,
         label="For what companies you want to apply or companies that you applied for which you want to share your experience",
         max_length=400,
-        widget=forms.Textarea(attrs={'class':'form-control'}))
+        widget=forms.Textarea(attrs={'class':'form-control mock-text'}))
     isMocker = forms.BooleanField(
         required=False,
         label="Do you want to give mock interviews to other students? If yes, please give a good description in the field above.")
@@ -193,17 +195,17 @@ class ProfileChangePasswordForm(forms.Form):
         required=True,
         label="Old Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
     password = forms.CharField(
         required=True,
         label="Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
     confirmPassword = forms.CharField(
         required=True,
         label="Confirm the Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
 
     def __init__(self, user=None, *args, **kwargs):
         super(ProfileChangePasswordForm, self).__init__(*args, **kwargs)

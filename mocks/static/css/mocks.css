@@ -3,7 +3,24 @@
     Forms Related
 */
 .control-group .controls #id_email {
-    max-width: 120px;
+    max-width: 135px;
+}
+
+.mock-form {
+	max-width: 480px;
+	margin: 0 auto;
+}
+
+.mock-controls {
+	width: 66%;
+}
+
+.mock-text {
+	width: 90%;
+}
+
+.mock-long-btn {
+	width: 95%;
 }
 
 /*
@@ -18,4 +35,13 @@
 }
 .footeritem {
     margin-left: 20px;
+}
+
+/*
+	all
+*/
+
+.mock-content {
+	max-width: 480px;
+	margin: 0 auto;
 }

@@ -1,19 +1,19 @@
 {% block mockerinfo %}
     <div class="mocker"> 
-        <div class="nameattr">
-            <span class="attr"> Interviewer: </span>
-            <span class="val"> {{ item.mocker.username }} ({{ item.mocker.email }}) </span>
+        <div class="nameattr row-fluid">
+            <span class="attr span3"> Interviewer: </span>
+            <span class="val span9"> {{ item.mocker.username }} ({{ item.mocker.email }}) </span>
         </div>
         {% block mockerdetails %}
             {% if item.mocker.skypeId %}
-                <div class="skypeidattr">
-                    <span class="attr"> Skype Id: </span>
-                    <span class="val"> {{ item.mocker.skypeId }} </span>
+                <div class="skypeidattr row-fluid">
+                    <span class="attr span3"> Skype Id: </span>
+                    <span class="val span9"> {{ item.mocker.skypeId }} </span>
                 </div>
             {% endif %}
-            <div class="detailsattr">
-                <div class="attr"> Description: </div>
-                <div class="val"> {{ item.mocker.description }} </div>
+            <div class="detailsattr row-fluid">
+                <div class="attr span3"> Description: </div>
+                <div class="val span9"> {{ item.mocker.description }} </div>
             </div>
         {% endblock mockerdetails %}
     </div>
@@ -22,39 +22,45 @@
 {% block mockeeinfo %}
     {% if item.mockee %}
         <div class="mockee">
-                <div class="nameattr">
-                    <span class="attr"> Interviewee: </span>
-                    <span class="val"> {{ item.mockee.username }} ({{ item.mockee.email }}) </span>
+                <div class="nameattr row-fluid">
+                    <span class="attr span3"> Interviewee: </span>
+                    <span class="val span9"> {{ item.mockee.username }} ({{ item.mockee.email }}) </span>
                 </div>
                 {% block mockeedetails %}
                     {% if item.mockee.skypeId %}
-                        <div class="skypeidattr">
-                            <span class="attr"> Skype Id: </span>
-                            <span class="val"> {{ item.mockee.skypeId }} </span>
+                        <div class="skypeidattr row-fluid">
+                            <span class="attr span3"> Skype Id: </span>
+                            <span class="val span9"> {{ item.mockee.skypeId }} </span>
                         </div>
                     {% endif %}
                     {% if item.mockee.description %}
-                        <div class="detailsattr">
-                            <div class="attr"> Description: </div>
-                            <div class="val"> {{ item.mockee.description }} </div>
+                        <div class="detailsattr row-fluid">
+                            <div class="attr span3"> Description: </div>
+                            <div class="val span9"> {{ item.mockee.description }} </div>
                         </div>
                     {% endif %}
                 {% endblock mockeedetails %}
         </div>
     {% else %}
-        <div class="mockee">
-            <span class="attr"> Interviewee: </span>
-            <span class="val"> Not assigned yet </span>
+        <div class="mockee row-fluid">
+            <span class="attr span3"> Interviewee: </span>
+            <span class="val span9"> Not assigned yet </span>
         </div>
     {% endif %}
 {% endblock mockeeinfo %}
 
 {% block starttime %}
-    <div class="starttime"> Time Start: {{ item.starttime }} </div>
+    <div class="starttime row-fluid"> 
+        <span class="attr span3"> Time Start: </span>
+        <span class="val span9"> {{ item.starttime }} </span>
+    </div>
 {% endblock starttime %}
 
 {% block endtime %}
-    <div class="endtime"> Time End: {{ item.endtime }} </div>
+    <div class="endtime row-fluid"> 
+        <span class="attr span3"> Time End: </span>
+        <span class="val span9"> {{ item.endtime }} </span>
+    </div>
 {% endblock endtime %}
 
 {% block endbutton %}
