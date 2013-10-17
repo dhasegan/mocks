@@ -1,29 +1,26 @@
-# Django settings for mocks project.
+"""Production settings and globals."""
 
-import os
+from os import environ, path
 
-# Sets the project path as a variable to be used below
-PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__)) + '/'
-
-DEBUG = True
+DEBUG = environ.get('DJANGO_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Daniel Hasegan', 'daniel@hasegan.com'),
 )
-
 MANAGERS = ADMINS
 
-# Parse database configuration from $DATABASE_URL
+# Sets the project path as a variable to be used below
+PROJECT_ROOT = path.realpath(path.dirname(__file__)) + '/'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'django_mocksdb',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': 'daniel',
-        'PASSWORD': 'whynomysql',
-        'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '5432',                      # Set to empty string for default.
+        'ENGINE': environ.get('DJANGO_DATABASE_BACKEND', 'django.db.backends.postgresql_psycopg2'),
+        'NAME': environ.get('DJANGO_DATABASE_NAME', ''),
+        'USER': environ.get('DJANGO_DATABASE_USER', ''),
+        'PASSWORD': environ.get('DJANGO_DATABASE_PASSWORD', ''),
+        'HOST': environ.get('DJANGO_DATABASE_HOST', 'localhost'),
+        'PORT': environ.get('DJANGO_DATABASE_PORT', '5432'),
     }
 }
 
@@ -38,7 +35,7 @@ ALLOWED_HOSTS = ['*']
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'US/Eastern'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -58,27 +55,23 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/var/www/example.com/media/"
 MEDIA_ROOT = PROJECT_ROOT + 'media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
-# Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/var/www/example.com/static/"
 STATIC_ROOT = 'staticfiles'
 
 # URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
+    path.join(PROJECT_ROOT, 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -93,7 +86,7 @@ STATICFILES_FINDERS = (
 LOGIN_URL = '/login'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '^o_)e^m+mjqs4d=2u*6a62qg&&715#46ppz%d^-55y-_8q@3-m'
+SECRET_KEY = environ.get('DJANGO_SECRET_KEY', '')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -112,18 +105,15 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-# Configures Django to merely print emails rather than sending them.
-# Comment out this line to enable real email-sending.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# See: https://docs.djangoproject.com/en/1.3/ref/settings/#email-backend
+EMAIL_BACKEND = environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = environ.get('DJANGO_EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_HOST_USER = environ.get('DJANGO_EMAIL_HOST_USER', 'your_email@example.com')
+EMAIL_HOST_PASSWORD = environ.get('DJANGO_EMAIL_HOST_PASSWORD', '')
+EMAIL_PORT = environ.get('DJANGO_EMAIL_PORT', 587)
 
-# To enable real email-sending, you should uncomment and 
-# configure the settings below.
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'donotreply.jacobsmocks'
-# EMAIL_HOST_PASSWORD = 'FOR_PASSWORD_PLEASE_ASK_AN_ADMINISTRATOR'
-# EMAIL_USE_TLS = True
+# For local testing uncomment previous and comment next to print emails on console
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ROOT_URLCONF = 'mocks.urls'
 

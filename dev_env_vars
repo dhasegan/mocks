@@ -1,0 +1,16 @@
+# Copy this in your ~/.bashrc file or just paste it in the terminal for each session
+
+# Django environment variables for the mocks project
+export DJANGO_DEBUG_STATE='True'
+export DJANGO_SECRET_KEY='@c9!hcm!m*zs73ik%!8u@3-#=rq!r^jtvgb^mnzc$3-z6-=bu)'
+export DJANGO_EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
+export DJANGO_EMAIL_HOST=''
+export DJANGO_EMAIL_HOST_USER=''
+export DJANGO_EMAIL_HOST_PASSWORD=''
+export DJANGO_EMAIL_PORT=''
+export DJANGO_DATABASE_BACKEND='django.db.backends.postgresql_psycopg2'
+export DJANGO_DATABASE_NAME='django_mocksdb'
+export DJANGO_DATABASE_USER='daniel'
+export DJANGO_DATABASE_HOST='localhost'
+export DJANGO_DATABASE_PORT='5432'
+export DJANGO_DATABASE_PASSWORD='whynomysql'
