@@ -107,6 +107,7 @@ MIDDLEWARE_CLASSES = (
 
 # See: https://docs.djangoproject.com/en/1.3/ref/settings/#email-backend
 EMAIL_BACKEND = environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_USE_TLS = True
 EMAIL_HOST = environ.get('DJANGO_EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_HOST_USER = environ.get('DJANGO_EMAIL_HOST_USER', 'your_email@example.com')
 EMAIL_HOST_PASSWORD = environ.get('DJANGO_EMAIL_HOST_PASSWORD', '')
