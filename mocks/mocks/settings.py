@@ -116,9 +116,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # To enable real email-sending, you should uncomment and 
 # configure the settings below.
-# EMAIL_HOST = 'Your-SMTP-host'               # perhaps 'smtp.andrew.cmu.edu'
-# EMAIL_HOST_USER = 'Your-SMTP-username'      # perhaps your Andrew ID
-# EMAIL_HOST_PASSWORD = 'Your-SMTP-password'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'donotreply.jacobsmocks'
+# EMAIL_HOST_PASSWORD = 'FOR_PASSWORD_PLEASE_ASK_AN_ADMINISTRATOR'
 # EMAIL_USE_TLS = True
 
 ROOT_URLCONF = 'mocks.urls'

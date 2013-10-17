@@ -334,13 +334,22 @@ def sendConfirmationEmail(request, new_user, context):
 
     email_body = """
 Welcome to Mocks, the place where you get mock interviews for free (for now at least) from other
-students that want to give those interviews! We want everyone to have a registered email address to make 
-available for Jacobs student only.
+students that want to give those interviews! We want everyone to have a registered email address to
+keep the website secure and trustworthy. 
+
+You registered with the name: %s
+
 Please click the link below to verify your email address and complete the registration of your account:
 
   http://%s%s
-""" % (request.get_host(),
-       reverse('confirmEmail', args=(new_user.email, token)))
+
+Thanks,
+Your friendly bot
+
+P.S. DO NOT REPLY TO THIS MESSAGE
+""" % ( new_user.username,
+        request.get_host(),
+        reverse('confirmEmail', args=(new_user.email, token)))
 
     send_mail(subject="Verify your email address",
               message= email_body,
