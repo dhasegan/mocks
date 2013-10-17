@@ -1,7 +1,6 @@
 # Django settings for mocks project.
 
 import os
-import dj_database_url
 
 # Sets the project path as a variable to be used below
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__)) + '/'
