@@ -1,6 +1,7 @@
 """Production settings and globals."""
 
 from os import environ, path
+from app import app_allowed_emails
 
 DEBUG = environ.get('DJANGO_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
@@ -169,3 +170,5 @@ LOGGING = {
         },
     }
 }
+
+ALLOWED_EMAILS = getattr(app_allowed_emails, 'ALLOWED_EMAILS', [])
