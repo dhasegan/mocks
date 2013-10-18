@@ -1,6 +1,13 @@
 {% extends "pages/loggedin.html" %}
 
 {% block content %}
+
+    {% if not items|length %}
+        <div class="alert">
+            There seems to be no scheduled mock interviews. If you want to interview people you can create time slots for mock interview. If you want to find mock interviews check out get interviews section.
+        </div>
+    {% endif %}
+
     {% for item in items %}
         <hr>
         {% include "types/mockitem.html" %}

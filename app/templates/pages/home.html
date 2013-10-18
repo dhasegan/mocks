@@ -1,6 +1,13 @@
 {% extends "pages/loggedin.html" %}
 
 {% block content %}
+
+    {% if not items|length %}
+        <div class="alert">
+            There seems to be no available interviews for you to schedule. If you know someone at Jacobs who would like to give mock interviews please invite them to this awesome app.
+        </div>
+    {% endif %}
+
     {% for item in items %}
         <hr>
         {% include "types/briefmockitem.html" %}
