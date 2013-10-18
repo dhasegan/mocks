@@ -12,9 +12,9 @@
             {% if field.field.required %}*{% endif %}
         </span>
         {% for error in field.errors %} 
-            <span class="alert alert-error">
+            <div class="alert alert-error">
               <span class="formerror"> {{error}} </span>
-            </span>
+            </div>
         {% endfor %}
     </div>
 </div>
