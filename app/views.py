@@ -29,7 +29,7 @@ from app.forms import *
 
 def getAvailableMockInterviews():
     items = []
-    allitems = Interview.objects.all()
+    allitems = Interview.objects.filter(start__gte=datetime.datetime.now())
     for item in allitems:
         if not item.mockee:
             mocker = MUser.objects.filter(id = item.mocker.id)[0]
@@ -44,7 +44,7 @@ def getAvailableMockInterviews():
 
 def getScheduledMockInterviews(user):
     items = []
-    allitems = Interview.objects.all()
+    allitems = Interview.objects.filter(start__gte=datetime.datetime.now()-datetime.timedelta(hours=6))
     for item in allitems:
         if item.mockee == user or item.mocker == user:
             mocker = MUser.objects.filter(id = item.mocker.id)[0]

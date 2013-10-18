@@ -17,4 +17,4 @@ class Interview(models.Model):
     start = models.DateTimeField()
 
     def __unicode__(self):
-        return self.mocker + ' at ' + self.start
+        return str(self.start)
