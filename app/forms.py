@@ -114,7 +114,9 @@ class LoginForm(forms.Form):
     def clean(self):
         cleaned_data = super(LoginForm, self).clean()
 
-        email = fullemail( cleaned_data.get('emailid'), cleaned_data.get('emailhost') )
+        email = cleaned_data.get('emailid')
+        if not "@" in email:
+            email = fullemail( email, cleaned_data.get('emailhost') )
         password = cleaned_data.get('password')
         muser = MUser.objects.filter(email__exact=email)
         if len(muser) != 1:
@@ -125,8 +127,6 @@ class LoginForm(forms.Form):
         if not user.is_active:
             raise forms.ValidationError("Your account may not be activated! Try checking your email!")
 
-        # cleanup email
-        email = fullemail( cleaned_data.get('emailid'), cleaned_data.get('emailhost') )
         cleaned_data['email'] = email
 
         return cleaned_data
