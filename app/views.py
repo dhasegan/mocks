@@ -27,8 +27,6 @@ import json
 from app.models import *
 from app.forms import *
 
-SCHOOL_ADDRESS = "@jacobs-university.de"
-
 def getAvailableMockInterviews():
     items = []
     allitems = Interview.objects.all()
@@ -180,12 +178,12 @@ def deleteInterview(request, interviewId):
     if mocker.id == request.user.id:
         item.delete()
         context['success'] = """Item was deleted from your schedule and your interviewees schedule.
-            Let your interviewee know that you don't have the time to attend the mock interview by emailing him at: """ + mockee.email + SCHOOL_ADDRESS
+            Let your interviewee know that you don't have the time to attend the mock interview by emailing him at: """ + mockee.email
     elif mockee.id == request.user.id:
         item.mockee = None
         item.save()
         context['success'] = """Item was deleted from your schedule. Next time please plan to stick to your schedule better. 
-            Let your interviewer know that you don't have the time to attend the mock interview by emailing him at: """ + mocker.email + SCHOOL_ADDRESS
+            Let your interviewer know that you don't have the time to attend the mock interview by emailing him at: """ + mocker.email
     return render(request, 'pages/deleteInterview.html', context)
 
 @login_required
@@ -349,12 +347,12 @@ Your friendly bot
 P.S. DO NOT REPLY TO THIS MESSAGE
 """ % ( new_user.username,
         request.get_host(),
-        reverse('confirmEmail', args=(new_user.email, token)))
+        reverse('confirmEmail', args=(new_user.email.replace('@','%40'), token)))
 
     send_mail(subject="Verify your email address",
               message= email_body,
-              from_email="donotreply" + SCHOOL_ADDRESS,
-              recipient_list=[new_user.email + SCHOOL_ADDRESS ])
+              from_email="donotreply.jacobsmocks@gmail.com",
+              recipient_list=[new_user.email ])
 
-    context['email'] = new_user.email + SCHOOL_ADDRESS
+    context['email'] = new_user.email
     return render(request, 'pages/emailconfirm.html', context)

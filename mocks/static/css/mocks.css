@@ -2,10 +2,6 @@
 /* 
     Forms Related
 */
-.control-group .controls #id_email {
-    max-width: 135px;
-}
-
 .mock-form {
 	max-width: 480px;
 	margin: 0 auto;
@@ -15,7 +11,7 @@
 	width: 66%;
 }
 
-.mock-text {
+.form-control {
 	width: 90%;
 }
 
