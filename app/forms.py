@@ -99,7 +99,7 @@ class LoginForm(forms.Form):
         required=True,
         label="Email Address",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.TextInput(attrs={'class':'form-control'}))
     emailhost = forms.ChoiceField(
         required=True,
         label="Email Host",
@@ -109,7 +109,7 @@ class LoginForm(forms.Form):
         required=True,
         label="Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     def clean(self):
         cleaned_data = super(LoginForm, self).clean()
@@ -135,11 +135,11 @@ class CreateSlotForm(forms.Form):
     date = forms.DateField(
         label="When do you want to set up the mock interview? (MM/DD/YY)",
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.TextInput(attrs={'class':'form-control'}))
     time = forms.TimeField(
         label="At what time? Please input the time in Germany's timezone. (HH:MM)",
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.TextInput(attrs={'class':'form-control'}))
 
     def clean(self):
         date = self.cleaned_data.get('date')
@@ -175,24 +175,24 @@ class DeleteInterviewForm(forms.Form):
         required=True,
         label="Why do you want to delete this mock interview?",
         max_length=400,
-        widget=forms.Textarea(attrs={'class':'form-control mock-text'}))
+        widget=forms.Textarea(attrs={'class':'form-control'}))
 
 class ProfileChangeForm(forms.Form):
     name = forms.CharField(
         required=True,
         label="Name",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.TextInput(attrs={'class':'form-control'}))
     skypeId = forms.CharField(
         required=False,
         label="Skype Id",
         max_length=40,
-        widget=forms.TextInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.TextInput(attrs={'class':'form-control'}))
     description = forms.CharField(
         required=False,
         label="For what companies you want to apply or companies that you applied for which you want to share your experience",
         max_length=400,
-        widget=forms.Textarea(attrs={'class':'form-control mock-text'}))
+        widget=forms.Textarea(attrs={'class':'form-control'}))
     isMocker = forms.BooleanField(
         required=False,
         label="Do you want to give mock interviews to other students? If yes, please give a good description in the field above.")
@@ -224,17 +224,17 @@ class ProfileChangePasswordForm(forms.Form):
         required=True,
         label="Old Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
     password = forms.CharField(
         required=True,
         label="Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
     confirmPassword = forms.CharField(
         required=True,
         label="Confirm the Password",
         max_length=40,
-        widget=forms.PasswordInput(attrs={'class':'form-control mock-text'}))
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     def __init__(self, user=None, *args, **kwargs):
         super(ProfileChangePasswordForm, self).__init__(*args, **kwargs)
@@ -260,6 +260,8 @@ class ProfileChangePasswordForm(forms.Form):
 
 
 def fullemail(emailid, emailhost):
+    if not emailid or not emailhost:
+        return ""
     for key,val in settings.ALLOWED_EMAILS:
         if key == emailhost:
             return emailid + val
