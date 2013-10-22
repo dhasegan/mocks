@@ -257,6 +257,8 @@ def mlogout(request):
     return redirect('/')
 
 def mlogin(request):
+    if request.user.is_authenticated():
+        return redirect('/')
     context = { 'page': "login" }
     context['form_submit'] = 'login'
     context['form_button'] = 'Login'
@@ -279,6 +281,8 @@ def mlogin(request):
     return redirect('/')
 
 def mregister(request):
+    if request.user.is_authenticated():
+        return redirect('/')
     context = { 'page': "register" }
     context['form_submit'] = 'register'
     context['form_button'] = 'Register'
@@ -309,6 +313,8 @@ def mregister(request):
     return sendConfirmationEmail(request, new_user, context)
 
 def confirm_registration(request, emailId, token):
+    if request.user.is_authenticated():
+        return redirect('/')
     user = get_object_or_404(MUser, email=emailId)
 
     if not default_token_generator.check_token(user, token):
