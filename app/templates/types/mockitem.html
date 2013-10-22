@@ -63,6 +63,24 @@
     </div>
 {% endblock endtime %}
 
+{% block description %}
+    {% if item.description %}
+        <div class="description row-fluid">
+            <span class="attr span3"> Mock Details: </span>
+            <span class="val span9"> {{ item.description }} </span>
+        </div>
+    {% endif %}
+{% endblock description %}
+
+{% block price %}
+    {% if item.price %}
+        <div class="price row-fluid">
+            <span class="attr span3"> Interview Price: </span>
+            <span class="val span9"> {{ item.price }} </span>
+        </div>
+    {% endif %}
+{% endblock price %}
+
 {% block endbutton %}
     {% if not no_button %}
         <form  method="get" action="/delete/{{ item.id }}">

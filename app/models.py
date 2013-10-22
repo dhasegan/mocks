@@ -15,6 +15,8 @@ class Interview(models.Model):
     mocker = models.ForeignKey(MUser, related_name="mer")
     mockee = models.ForeignKey(MUser, related_name="mee", null=True, blank=True)
     start = models.DateTimeField()
+    description = models.CharField(max_length=200, null=True, blank=True)
+    price = models.CharField(max_length=40, null=True, blank=True)
 
     def __unicode__(self):
         return str(self.start)

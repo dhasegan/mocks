@@ -38,7 +38,8 @@ def getAvailableMockInterviews():
                 'mocker': mocker,
                 'starttime': date,
                 'endtime': date + datetime.timedelta(hours=1),
-                'id': item.id
+                'id': item.id,
+                'price': item.price,
             })
     return sorted( items, key=lambda it:it['starttime'])
 
@@ -53,7 +54,9 @@ def getScheduledMockInterviews(user):
                 'mocker': mocker,
                 'starttime': date,
                 'endtime': date + datetime.timedelta(hours=1),
-                'id': item.id
+                'id': item.id,
+                'description': item.description,
+                'price': item.price,
             })
             if item.mockee:
                 mockee = MUser.objects.filter(id = item.mockee.id)[0]
@@ -96,7 +99,8 @@ def createslot(request):
         context['form'] = form
         return render(request, 'pages/createslot.html', context)
 
-    mockInterview = Interview(mocker=user, start=form.cleaned_data['datetime'])
+    mockInterview = Interview(mocker=user, start=form.cleaned_data['datetime'],
+            description=form.cleaned_data['description'], price=form.cleaned_data['price'])
     mockInterview.save()
 
     return redirect('/schedule')
@@ -115,7 +119,9 @@ def scheduleInterview(request, interviewId):
         'mocker': mocker,
         'starttime': date,
         'endtime': date + datetime.timedelta(hours=1),
-        'id': item.id
+        'id': item.id,
+        'description': item.description,
+        'price': item.price,
     }
     context['item'] = mockitem
     if mocker.id == mockee.id:

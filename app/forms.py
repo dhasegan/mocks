@@ -140,6 +140,16 @@ class CreateSlotForm(forms.Form):
         label="At what time? Please input the time in Germany's timezone. (HH:MM)",
         required=True,
         widget=forms.TextInput(attrs={'class':'form-control'}))
+    description = forms.CharField(
+        required=False,
+        label="Any other details you want to provide related to this specific mock interview?",
+        max_length=200,
+        widget=forms.Textarea(attrs={'class':'form-control'}))
+    price = forms.CharField(
+        required=False,
+        label="Price for the interview",
+        max_length=40,
+        widget=forms.TextInput(attrs={'class':'form-control'}))
 
     def clean(self):
         date = self.cleaned_data.get('date')
