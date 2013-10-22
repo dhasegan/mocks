@@ -41,3 +41,15 @@
 	max-width: 480px;
 	margin: 0 auto;
 }
+
+/*
+    Mock interview font styling
+ */
+
+.mock-content .nameattr .attr {
+    font-weight: bolder;
+}
+
+.mock-content .starttime .attr {
+    font-weight: bolder;
+}

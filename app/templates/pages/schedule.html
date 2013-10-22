@@ -8,8 +8,10 @@
         </div>
     {% endif %}
 
-    {% for item in items %}
-        <hr>
-        {% include "types/mockitem.html" %}
-    {% endfor %}
+    <div class="schedulecontent">
+        {% for item in items %}
+            <hr>
+            {% include "types/mockitem.html" %}
+        {% endfor %}
+    </div>
 {% endblock content %}

@@ -2,7 +2,7 @@
     <div class="mocker"> 
         <div class="nameattr row-fluid">
             <span class="attr span3"> Interviewer: </span>
-            <span class="val span9"> {{ item.mocker.username }} ({{ item.mocker.email }}) </span>
+            <span class="val span9"> {{ item.mocker.username }} ( {{ item.mocker.email }} ) </span>
         </div>
         {% block mockerdetails %}
             {% if item.mocker.skypeId %}
@@ -24,7 +24,7 @@
         <div class="mockee">
                 <div class="nameattr row-fluid">
                     <span class="attr span3"> Interviewee: </span>
-                    <span class="val span9"> {{ item.mockee.username }} ({{ item.mockee.email }}) </span>
+                    <span class="val span9"> {{ item.mockee.username }} ( {{ item.mockee.email }} ) </span>
                 </div>
                 {% block mockeedetails %}
                     {% if item.mockee.skypeId %}
@@ -84,7 +84,7 @@
 {% block endbutton %}
     {% if not no_button %}
         <form  method="get" action="/delete/{{ item.id }}">
-            <button class="btn btn-danger deleteitem-btn" type="submit" value="delete"> 
+            <button class="btn btn-mini btn-danger deleteitem-btn" type="submit" value="delete"> 
                 Delete interview
             </button>
         </form>
