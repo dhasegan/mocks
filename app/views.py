@@ -406,6 +406,7 @@ Hi,
 
 You just received feedback from %s:
 %s
+------------
 
 Bye
 """ % ( fname if (fname != '') else "Anonymous",
