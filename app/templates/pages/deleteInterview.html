@@ -6,15 +6,15 @@
             {{ error }}
         </div>
     {% endfor %}
-    {% if success %}
+    {% if not success %}
+        {% include "types/mockitem.html" %}
+
+        {% if form %}
+            {% include "types/form.html" %}
+        {% endif %}
+    {% else %}
         <div class="alert alert-success">
             {{ success }}
         </div>
-    {% endif %}
-
-    {% include "types/mockitem.html" %}
-
-    {% if form %}
-        {% include "types/form.html" %}
     {% endif %}
 {% endblock content %}
