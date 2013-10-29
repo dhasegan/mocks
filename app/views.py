@@ -103,7 +103,10 @@ def createslot(request):
             description=form.cleaned_data['description'], price=form.cleaned_data['price'])
     mockInterview.save()
 
-    return redirect('/schedule')
+    context['success'] = "Your slot was created! You can add another one below!"
+    context['form'] = form
+
+    return render(request, 'pages/createslot.html', context)
 
 @login_required
 def scheduleInterview(request, interviewId):
