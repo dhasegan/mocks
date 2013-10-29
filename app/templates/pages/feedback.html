@@ -5,8 +5,9 @@
         <div class="alert alert-success">
             {{ success }}
         </div>
+    {% else %}
+        <div class="feedback-form">
+            {% include 'types/form.html' %}
+        </div>
     {% endif %}
-    <div class="feedback-form">
-        {% include 'types/form.html' %}
-    </div>
 {% endblock %}

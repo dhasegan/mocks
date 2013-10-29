@@ -369,7 +369,7 @@ def feedback(request):
         feedback_name = form.cleaned_data['name']
     sendFeedbackEmail(request, form.cleaned_data['description'], feedback_name)
 
-    context['success'] = "Thank you for submitting this feedback!"
+    context['success'] = "Thank you for submitting feedback! We appreciate it!"
     return render(request, "pages/feedback.html", context)
 
 def sendConfirmationEmail(request, new_user, context):
