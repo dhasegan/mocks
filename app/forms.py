@@ -16,6 +16,9 @@ import datetime
 # import settings for getting emails
 from django.conf import settings
 
+# Html strip tags helper
+from django.utils.html import strip_tags
+
 class RegisterForm(forms.Form):
     emailid = forms.CharField(
         required=True,
@@ -268,6 +271,19 @@ class ProfileChangePasswordForm(forms.Form):
 
         return oldpassword
 
+class FeedbackForm(forms.Form):
+    description = forms.CharField(
+        required=True,
+        label="""What do you like or dislike about the website?
+                 What would you improve or what do you find annoying?
+                 Any thoughts whatsoever would be appreciated.""",
+        max_length=2000,
+        widget=forms.Textarea(attrs={'class':'form-control'}))
+    name = forms.CharField(
+        required=False,
+        label="Your Name (OPTIONAL)",
+        max_length=40,
+        widget=forms.TextInput(attrs={'class':'form-control'}))
 
 def fullemail(emailid, emailhost):
     if not emailid or not emailhost:

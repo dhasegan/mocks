@@ -1,0 +1,12 @@
+{% extends basetemplate %}
+
+{% block content %}
+    {% if success %}
+        <div class="alert alert-success">
+            {{ success }}
+        </div>
+    {% endif %}
+    <div class="feedback-form">
+        {% include 'types/form.html' %}
+    </div>
+{% endblock %}

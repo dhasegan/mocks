@@ -339,6 +339,36 @@ def about(request):
         context['basetemplate'] = "pages/loggedout.html"
     return render(request, "pages/about.html", context)
 
+def feedback(request):
+    context = {}
+    if request.user.is_authenticated():
+        context['basetemplate'] = "pages/loggedin.html"
+    else:
+        context['basetemplate'] = "pages/loggedout.html"
+    context['form_submit'] = 'feedback'
+    context['form_button'] = 'Submit Feedback'
+
+    if request.method == 'GET':
+        form = FeedbackForm()
+        context['form'] = form
+        return render(request, "pages/feedback.html", context)
+
+    if request.method != 'POST':
+        raise Http404
+
+    form = FeedbackForm(request.POST)
+    context['form'] = form
+    if not form.is_valid():
+        return render(request, "pages/feedback.html", context)
+
+    feedback_name = ""
+    if 'name' in form.cleaned_data and form.cleaned_data['name']:
+        feedback_name = form.cleaned_data['name']
+    sendFeedbackEmail(request, form.cleaned_data['description'], feedback_name)
+
+    context['success'] = "Thank you for submitting this feedback!"
+    return render(request, "pages/feedback.html", context)
+
 def sendConfirmationEmail(request, new_user, context):
     token = default_token_generator.make_token(new_user)
 
@@ -368,3 +398,20 @@ P.S. DO NOT REPLY TO THIS MESSAGE
 
     context['email'] = new_user.email
     return render(request, 'pages/emailconfirm.html', context)
+
+def sendFeedbackEmail(request, feedbackdata, fname):
+
+    email_body = """
+Hi,
+
+You just received feedback from %s:
+%s
+
+Bye
+""" % ( fname if (fname != '') else "Anonymous",
+        feedbackdata )
+
+    send_mail(subject="Feedback from mocks user",
+              message= email_body,
+              from_email="donotreply.jacobsmocks@gmail.com",
+              recipient_list=[ "donotreply.jacobsmocks@gmail.com" ])
